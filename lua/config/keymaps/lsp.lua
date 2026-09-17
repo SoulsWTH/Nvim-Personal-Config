@@ -1,5 +1,16 @@
 local M = {}
 
+local function jump_to_definition()
+  vim.lsp.buf.definition({
+    on_list = function(locations)
+      -- Neovim opens quickfix when the LSP returns multiple definitions.
+      -- Keep those alternatives in the window-local list, but jump directly.
+      vim.fn.setloclist(0, {}, " ", locations)
+      vim.cmd.lfirst()
+    end,
+  })
+end
+
 function M.on_attach(event)
   local client = vim.lsp.get_client_by_id(event.data.client_id)
   if not client then
@@ -11,6 +22,7 @@ function M.on_attach(event)
   end
 
   map("gd", function() Snacks.picker.lsp_definitions() end, "Go to definition")
+  map("<leader>gd", jump_to_definition, "Jump to definition")
   map("gD", vim.lsp.buf.declaration, "Go to declaration")
   map("gri", function() Snacks.picker.lsp_implementations() end, "Go to implementation")
   map("grr", function() Snacks.picker.lsp_references() end, "Show references")

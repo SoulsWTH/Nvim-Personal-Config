@@ -23,7 +23,7 @@ require("lazy").setup({
     lazy = true,
     version = false,
   },
-  install = { colorscheme = { "oxocarbon", "habamax" } },
+  install = { colorscheme = { "inir", "oxocarbon", "habamax" } },
   checker = {
     enabled = true,
     notify = false,

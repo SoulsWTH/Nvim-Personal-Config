@@ -1,57 +1,25 @@
-local palette = {
-  bg = "#161616",
-  surface = "#262626",
-  surface_alt = "#393939",
-  muted = "#525252",
-  fg = "#f2f4f8",
-  subdued = "#dde1e6",
-  blue = "#78a9ff",
-  cyan = "#3ddbd9",
-  green = "#42be65",
-  pink = "#ee5396",
-  purple = "#be95ff",
-  red = "#ff7eb6",
-}
-
 local function project_cwd()
   return vim.g.esteban_start_cwd or vim.fn.getcwd()
 end
 
 return {
   {
-    "nyoom-engineering/oxocarbon.nvim",
+    "yukazakiri/inir.nvim",
     lazy = false,
     priority = 1100,
-    config = function()
-      vim.opt.background = "dark"
-      vim.cmd.colorscheme("oxocarbon")
-
-      local overrides = {
-        Normal = { fg = palette.fg, bg = "none" },
-        NormalNC = { fg = palette.subdued, bg = "none" },
-        EndOfBuffer = { fg = palette.bg, bg = "none" },
-        FoldColumn = { fg = palette.muted, bg = "none" },
-        SignColumn = { fg = palette.subdued, bg = "none" },
-        FloatBorder = { fg = palette.muted, bg = palette.bg },
-        NormalFloat = { bg = palette.bg },
-        Pmenu = { bg = palette.surface, fg = palette.fg },
-        PmenuSel = { bg = palette.surface_alt, fg = palette.fg, bold = true },
-        WinSeparator = { fg = palette.surface_alt },
-        BlinkCmpMenu = { bg = palette.surface, fg = palette.fg },
-        BlinkCmpMenuBorder = { fg = palette.muted, bg = palette.surface },
-        BlinkCmpMenuSelection = { bg = palette.surface_alt, fg = palette.fg, bold = true },
-        BlinkCmpKindFunction = { fg = palette.blue },
-        BlinkCmpKindMethod = { fg = palette.blue },
-        BlinkCmpKindVariable = { fg = palette.cyan },
-        BlinkCmpKindClass = { fg = palette.purple },
-        BlinkCmpKindInterface = { fg = palette.purple },
-        BlinkCmpKindSnippet = { fg = palette.green },
-        BlinkCmpKindKeyword = { fg = palette.pink },
-      }
-      for name, value in pairs(overrides) do
-        vim.api.nvim_set_hl(0, name, value)
-      end
+    dependencies = { "nyoom-engineering/oxocarbon.nvim" },
+    opts = function()
+      return require("config.theme").inir_opts()
     end,
+    config = function(_, opts)
+      require("inir").setup(opts)
+      local theme = require("config.theme")
+      theme.setup_commands()
+      theme.load()
+    end,
+    keys = {
+      { "<leader>ut", "<cmd>ThemeToggle<cr>", desc = "Toggle iNiR colors" },
+    },
   },
   {
     "echasnovski/mini.icons",
@@ -150,9 +118,10 @@ return {
         { "<leader>b", group = "buffers" },
         { "<leader>c", group = "code" },
         { "<leader>f", group = "find" },
-        { "<leader>g", group = "git" },
+        { "<leader>g", group = "git / navigation" },
         { "<leader>m", group = "marks" },
         { "<leader>q", group = "quit/session" },
+        { "<leader>d", group = "debug" },
         { "<leader>u", group = "ui toggles" },
         { "<leader>w", group = "write/window" },
         { "<leader>x", group = "diagnostics" },
@@ -188,21 +157,9 @@ return {
     event = "VeryLazy",
     dependencies = { "echasnovski/mini.icons" },
     opts = function()
-      local theme = {
-        normal = {
-          a = { fg = palette.bg, bg = palette.blue, gui = "bold" },
-          b = { fg = palette.fg, bg = palette.surface_alt },
-          c = { fg = palette.subdued, bg = palette.surface },
-        },
-        insert = { a = { fg = palette.bg, bg = palette.green, gui = "bold" } },
-        visual = { a = { fg = palette.bg, bg = palette.purple, gui = "bold" } },
-        replace = { a = { fg = palette.bg, bg = palette.red, gui = "bold" } },
-        command = { a = { fg = palette.bg, bg = palette.pink, gui = "bold" } },
-        inactive = { c = { fg = palette.muted, bg = palette.bg } },
-      }
       return {
         options = {
-          theme = theme,
+          theme = require("config.theme").lualine_theme,
           globalstatus = true,
           component_separators = { left = "│", right = "│" },
           section_separators = { left = "", right = "" },
@@ -212,6 +169,10 @@ return {
           lualine_b = { "branch", "diff" },
           lualine_c = { { "filename", path = 1, symbols = { modified = " ●", readonly = " " } } },
           lualine_x = {
+            {
+              function() return "  " .. require("dap").status() end,
+              cond = function() return package.loaded.dap and require("dap").status() ~= "" end,
+            },
             {
               function()
                 local clients = vim.lsp.get_clients({ bufnr = 0 })

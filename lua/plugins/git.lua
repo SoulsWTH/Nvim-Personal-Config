@@ -37,7 +37,7 @@ return {
           map("<leader>gr", gs.reset_hunk, "Reset hunk", { "n", "x" })
           map("<leader>gp", gs.preview_hunk, "Preview hunk")
           map("<leader>gb", gs.blame_line, "Blame line")
-          map("<leader>gd", gs.diffthis, "Diff against index")
+          map("<leader>gD", gs.diffthis, "Diff against index")
           map("<leader>gL", function() gs.blame_line({ full = true }) end, "Full blame")
           map("<leader>ug", gs.toggle_current_line_blame, "Toggle Git blame")
         end,
