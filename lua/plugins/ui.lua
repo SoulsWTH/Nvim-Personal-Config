@@ -78,22 +78,118 @@ return {
       words = { enabled = true },
     },
     keys = {
-      { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart find files" },
-      { "<leader>e", function() Snacks.explorer({ cwd = project_cwd() }) end, desc = "File explorer" },
-      { "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
-      { "<leader>fg", function() Snacks.picker.grep() end, desc = "Find text" },
-      { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Find buffers" },
-      { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent files" },
-      { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
-      { "<leader>fh", function() Snacks.picker.help() end, desc = "Help pages" },
-      { "<leader>fk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
-      { "<leader>fc", function() Snacks.picker.commands() end, desc = "Commands" },
-      { "<leader>fn", function() Snacks.picker.notifications() end, desc = "Notification history" },
-      { "<leader>gB", function() Snacks.picker.git_branches() end, desc = "Git branches" },
-      { "<leader>gl", function() Snacks.lazygit() end, desc = "LazyGit" },
-      { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss notifications" },
-      { "<leader>z", function() Snacks.zen() end, desc = "Zen mode" },
-      { "<C-`>", function() Snacks.terminal() end, desc = "Toggle terminal" },
+      {
+        "<leader><space>",
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = "Smart find files",
+      },
+      {
+        "<leader>e",
+        function()
+          Snacks.explorer({ cwd = project_cwd() })
+        end,
+        desc = "File explorer",
+      },
+      {
+        "<leader>ff",
+        function()
+          Snacks.picker.files()
+        end,
+        desc = "Find files",
+      },
+      {
+        "<leader>fg",
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = "Find text",
+      },
+      {
+        "<leader>fb",
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = "Find buffers",
+      },
+      {
+        "<leader>fr",
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = "Recent files",
+      },
+      {
+        "<leader>fp",
+        function()
+          Snacks.picker.projects()
+        end,
+        desc = "Projects",
+      },
+      {
+        "<leader>fh",
+        function()
+          Snacks.picker.help()
+        end,
+        desc = "Help pages",
+      },
+      {
+        "<leader>fk",
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = "Keymaps",
+      },
+      {
+        "<leader>fc",
+        function()
+          Snacks.picker.commands()
+        end,
+        desc = "Commands",
+      },
+      {
+        "<leader>fn",
+        function()
+          Snacks.picker.notifications()
+        end,
+        desc = "Notification history",
+      },
+      {
+        "<leader>gB",
+        function()
+          Snacks.picker.git_branches()
+        end,
+        desc = "Git branches",
+      },
+      {
+        "<leader>gl",
+        function()
+          Snacks.lazygit()
+        end,
+        desc = "LazyGit",
+      },
+      {
+        "<leader>un",
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = "Dismiss notifications",
+      },
+      {
+        "<leader>z",
+        function()
+          Snacks.zen()
+        end,
+        desc = "Zen mode",
+      },
+      {
+        "<C-`>",
+        function()
+          Snacks.terminal()
+        end,
+        desc = "Toggle terminal",
+      },
     },
     init = function()
       vim.api.nvim_create_autocmd("User", {
@@ -148,8 +244,20 @@ return {
       { "<leader>xs", "<cmd>Trouble symbols toggle focus=false win.position=right<cr>", desc = "Document symbols" },
       { "<leader>xl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP locations" },
       { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list" },
-      { "[q", function() require("trouble").prev({ skip_groups = true, jump = true }) end, desc = "Previous trouble item" },
-      { "]q", function() require("trouble").next({ skip_groups = true, jump = true }) end, desc = "Next trouble item" },
+      {
+        "[q",
+        function()
+          require("trouble").prev({ skip_groups = true, jump = true })
+        end,
+        desc = "Previous trouble item",
+      },
+      {
+        "]q",
+        function()
+          require("trouble").next({ skip_groups = true, jump = true })
+        end,
+        desc = "Next trouble item",
+      },
     },
   },
   {
@@ -170,14 +278,26 @@ return {
           lualine_c = { { "filename", path = 1, symbols = { modified = " ●", readonly = " " } } },
           lualine_x = {
             {
-              function() return "  " .. require("dap").status() end,
-              cond = function() return package.loaded.dap and require("dap").status() ~= "" end,
+              function()
+                return "  " .. require("dap").status()
+              end,
+              cond = function()
+                return package.loaded.dap and require("dap").status() ~= ""
+              end,
             },
             {
               function()
                 local clients = vim.lsp.get_clients({ bufnr = 0 })
-                if #clients == 0 then return "" end
-                return "  " .. table.concat(vim.tbl_map(function(client) return client.name end, clients), ", ")
+                if #clients == 0 then
+                  return ""
+                end
+                return "  "
+                  .. table.concat(
+                    vim.tbl_map(function(client)
+                      return client.name
+                    end, clients),
+                    ", "
+                  )
               end,
             },
             "diagnostics",
